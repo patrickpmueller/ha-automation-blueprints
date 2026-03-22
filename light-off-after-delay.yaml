@@ -17,7 +17,7 @@ blueprint:
       description: After how much time to turn off lights
       default:
         hours: 0
-        minutes: 5
+        minutes: 05
         seconds: 0
       selector:
         duration:
