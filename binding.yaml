@@ -1,0 +1,42 @@
+blueprint:
+  name: Light Syncing
+  description: Turn a light on based on another's state, keeping them in sync
+  domain: automation
+  input:
+    source_light:
+      name: Source Lights
+      description: The lights from which state is taken from
+      selector:
+        target:
+          entity:
+            - domain: light
+    target_light:
+      name: Target Lights
+      description: Lights to keep in sync with the source light
+      selector:
+        target:
+          entity:
+            filter:
+              - domain: light
+            mutliple: true
+
+
+triggers:
+  - trigger: state
+    entity_id: !input source_light
+    to: "off"
+    id: "off"
+  - trigger: state
+    entity_id: !input source_light
+    to: "on"
+    id: "on"
+
+
+actions:
+  - action: >
+      {% if trigger.id == "on" %}
+        target_light.turn_on
+      {% else %}
+        target_light.turn_off
+      {% endif %}
+    target: !input target_light
