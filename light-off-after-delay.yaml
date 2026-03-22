@@ -9,6 +9,7 @@ blueprint:
     lights:
       name: Lights
       description: The lights that will be turned off
+      icon: mdi:lightbulb
       selector:
         entity:
           multiple: true
@@ -16,6 +17,7 @@ blueprint:
             - domain: light
     delay:
       name: Delay
+      icon: mdi:clock
       description: After how much time to turn off lights
       selector:
         duration:
