@@ -1,0 +1,35 @@
+blueprint:
+  name: Light off after Delay
+  description: Turns off selected lights after a given delay
+  domain: automation
+  author: Patrick Pellacani Mueller
+  homeassistant:
+    min_version: 2024.6.0
+  input:
+    lights:
+      name: Lights
+      description: The lights that will be turned off
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: light
+    delay:
+      name: Delay
+      description: After how much time to turn off lights
+      selector:
+        duration:
+
+triggers:
+  - trigger: state
+    entity_id: !input lights
+    to:
+      - "on"
+    for: !input delay
+
+actions:
+  - action: light.turn_off
+    target:
+      entity_id: !input lights
+
+mode: restart
