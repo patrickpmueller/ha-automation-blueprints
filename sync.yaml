@@ -2,6 +2,9 @@ blueprint:
   name: Light Syncing
   description: Turn a light on based on another's state, keeping them in sync
   domain: automation
+  author: Patrick Pellacani Mueller
+  homeassistant:
+    min_version: 2024.6.0
   input:
     source_light:
       name: Source Lights
