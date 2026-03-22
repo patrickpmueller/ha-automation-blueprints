@@ -3,8 +3,6 @@ blueprint:
   description: Turns off selected lights after a given delay
   domain: automation
   author: Patrick Pellacani Mueller
-  homeassistant:
-    min_version: 2024.6.0
   input:
     lights:
       name: Lights
