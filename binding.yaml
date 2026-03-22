@@ -7,8 +7,8 @@ blueprint:
       name: Source Lights
       description: The lights from which state is taken from
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             - domain: light
     target_light:
       name: Target Lights
@@ -16,9 +16,7 @@ blueprint:
       selector:
         target:
           entity:
-            filter:
-              - domain: light
-            mutliple: true
+            - domain: light
 
 
 triggers:
