@@ -17,6 +17,10 @@ blueprint:
     delay:
       name: Delay
       description: After how much time to turn off lights
+      default:
+        hours: 0
+        minutes: 5
+        seconds: 0
       selector:
         duration:
 
