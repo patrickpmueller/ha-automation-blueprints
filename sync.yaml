@@ -6,22 +6,24 @@ blueprint:
   homeassistant:
     min_version: 2024.6.0
   input:
-    source_light:
-      name: Source Lights
-      description: The lights from which state is taken from
-      icon: "mdi:light-switch"
-      selector:
-        entity:
-          filter:
-            - domain: light
-    target_light:
-      name: Target Lights
-      description: Lights to keep in sync with the source light
-      icon: "mdi:target"
-      selector:
-        target:
-          entity:
-            - domain: light
+    lights:
+      name: Lights
+      icon: mdi:lightbulb
+      input:
+        source_light:
+          name: Source Lights
+          description: The lights from which state is taken from
+          selector:
+            entity:
+              filter:
+                - domain: light
+        target_light:
+          name: Target Lights
+          description: Lights to keep in sync with the source light
+          selector:
+            target:
+              entity:
+                - domain: light
 
 
 triggers:
