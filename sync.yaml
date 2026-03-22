@@ -25,6 +25,8 @@ blueprint:
               entity:
                 - domain: light
 
+mode: single
+max_exceeded: silent
 
 triggers:
   - trigger: state
