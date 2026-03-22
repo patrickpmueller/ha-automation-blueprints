@@ -9,7 +9,7 @@ blueprint:
     source_light:
       name: Source Lights
       description: The lights from which state is taken from
-      icon: mdi:light-switch
+      icon: "mdi:light-switch"
       selector:
         entity:
           filter:
@@ -17,7 +17,7 @@ blueprint:
     target_light:
       name: Target Lights
       description: Lights to keep in sync with the source light
-      icon: mdi:target
+      icon: "mdi:target"
       selector:
         target:
           entity:
