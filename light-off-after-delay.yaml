@@ -8,8 +8,8 @@ blueprint:
   input:
     lights:
       name: Lights
-      description: The lights that will be turned off
       icon: mdi:lightbulb
+      description: The lights that will be turned off
       selector:
         entity:
           multiple: true
