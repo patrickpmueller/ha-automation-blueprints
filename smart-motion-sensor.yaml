@@ -22,12 +22,12 @@ blueprint:
     no_motion_wait:
       name: Wait time
       description: Time to leave the light on after last motion is detected.
-      default: 120
+      default:
+        hours: 00
+        minutes: 00
+        seconds: 30
       selector:
-        number:
-          min: 0
-          max: 3600
-          unit_of_measurement: seconds
+        duration:
 
 # If motion is detected within the delay,
 # we restart the script.
@@ -57,9 +57,6 @@ actions:
               from: "on"
               to: "off"
           - delay:
-            hours: 0
-            minutes: 0
             seconds: !input no_motion_wait
-            milliseconds: 0
           - action: light.turn_off
             target: "{{ repeat.item }}"
