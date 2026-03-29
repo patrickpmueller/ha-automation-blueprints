@@ -13,12 +13,13 @@ blueprint:
               domain: binary_sensor
             - device_class: motion
               domain: binary_sensor
-    light_target:
+    light_entities:
       name: Light
       selector:
-        target:
-          entity:
-            domain: light
+        entity:
+          multiple: true
+          filter:
+            - domain: light
     no_motion_wait:
       name: Wait time
       description: Time to leave the light on after last motion is detected.
@@ -43,14 +44,15 @@ triggers:
 actions:
   sequence:
     - repeat:
-        for_each: !input light_target
+        for_each: !input light_entities
         sequence:
           - if:
             - condition: template
               value_template: "{{ is_state(repeat.item, 'off') }}"
           - then:
             - action: light.turn_on
-              target: "{{ repeat.item }}"
+              target:
+                entity_id: "{{ repeat.item }}"
             - wait_for_trigger:
               - trigger: state
                 entity_id: !input motion_entity
@@ -59,4 +61,5 @@ actions:
             - delay:
               seconds: !input no_motion_wait
             - action: light.turn_off
-              target: "{{ repeat.item }}"
+              target:
+                entity_id: "{{ repeat.item }}"
