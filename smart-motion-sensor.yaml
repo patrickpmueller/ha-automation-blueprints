@@ -49,7 +49,7 @@ actions:
           - if:
             - condition: template
               value_template: "{{ is_state(repeat.item, 'off') }}"
-          - then:
+            then:
             - action: light.turn_on
               target:
                 entity_id: "{{ repeat.item }}"
