@@ -94,7 +94,7 @@ actions:
         continue_on_timeout: false
         timeout: !input outer_walk_duration
       - alias: Open the gate
-        sequence: !open_gate
+        sequence: !input open_gate
 
 mode: restart
 max_exceeded: silent
