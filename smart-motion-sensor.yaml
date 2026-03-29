@@ -33,8 +33,6 @@ blueprint:
       selector:
         duration:
 
-# If motion is detected within the delay,
-# we restart the script.
 mode: restart
 max_exceeded: silent
 
@@ -59,7 +57,7 @@ actions:
               target:
                 entity_id: "{{ repeat.item }}"
             - variables:
-              to_turn_off: "{% append repeat.item to to_turn_off %}{{ to_turn_off }}"
+                to_turn_off: "{{ to_turn_off + [repeat.item] }}"
   - wait_for_trigger:
     - trigger: state
       entity_id: !input motion_entity
