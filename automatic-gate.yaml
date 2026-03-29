@@ -1,6 +1,6 @@
 blueprint:
-  name: Light off after Delay
-  description: Turns off selected lights after a given delay
+  name: Automatic Gate
+  description: Automatically opens a gate at the right time
   domain: automation
   author: Patrick Pellacani Mueller
   homeassistant:
