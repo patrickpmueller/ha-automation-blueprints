@@ -6,6 +6,7 @@ blueprint:
   input:
     motion_entity:
       name: Motion Sensor
+      description: Motion sensor deciding whether or not lights go on.
       selector:
         entity:
           filter:
@@ -15,6 +16,7 @@ blueprint:
               domain: binary_sensor
     light_entities:
       name: Light
+      description: Lights to turn on.
       selector:
         entity:
           multiple: true
