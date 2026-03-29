@@ -44,24 +44,31 @@ triggers:
     from: "off"
     to: "on"
 
+variables:
+  to_turn_off: []
+
 actions:
-  sequence:
-    - repeat:
-        for_each: !input light_entities
-        sequence:
-          - if:
-              - condition: template
-                value_template: "{{ is_state(repeat.item, 'off') }}"
-            then:
-              - action: light.turn_on
-                target:
-                  entity_id: "{{ repeat.item }}"
-              - wait_for_trigger:
-                - trigger: state
-                  entity_id: !input motion_entity
-                  from: "on"
-                  to: "off"
-              - delay: !input no_motion_wait
-              - action: light.turn_off
-                target:
-                  entity_id: "{{ repeat.item }}"
+  - repeat:
+      for_each: !input light_entities
+      sequence:
+        - if:
+            - condition: template
+              value_template: "{{ is_state(repeat.item, 'off') }}"
+          then:
+            - action: light.turn_on
+              target:
+                entity_id: "{{ repeat.item }}"
+            - variables:
+              to_turn_off: "{% append repeat.item to to_turn_off %}{{ to_turn_off }}"
+  - wait_for_trigger:
+    - trigger: state
+      entity_id: !input motion_entity
+      from: "on"
+      to: "off"
+  - delay: !input no_motion_wait
+  - repeat:
+    for_each: "{{ to_turn_off }}"
+    sequence:
+      - action: light.turn_off
+        target:
+          entity_id: "{{ repeat.item }}"
