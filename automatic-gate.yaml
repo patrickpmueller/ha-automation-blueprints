@@ -13,7 +13,6 @@ blueprint:
         entity:
           filter:
             - domain: person
-            - domain: device_tracker
     open_gate:
       name: Open Gate
       description: Action to open the gate. Action sould close the gate within a timeout if desired.
