@@ -1,0 +1,98 @@
+blueprint:
+  name: Light off after Delay
+  description: Turns off selected lights after a given delay
+  domain: automation
+  author: Patrick Pellacani Mueller
+  homeassistant:
+    min_version: 2024.6.0
+  input:
+    person:
+      name: Person
+      description: Person tracker which will be used to open the gate.
+      entity:
+        filter:
+          - domain: person
+    open_gate:
+      name: Open Gate
+      description: Action to open the gate. Action sould close the gate within a timeout if desired.
+      action:
+    timeouts:
+      name: Timeouts
+      icon: mdi:clock
+      input:
+        outer_inner_duration:
+          name: Outer to inner duration
+          description: Time it takes to travel from the outer pickup zone to the inner pickup zone by car. Worst case scenario.
+          default:
+            hours: 0
+            minutes: 01
+            seconds: 30
+            milliseconds: 0
+          duration:
+        outer_walk_duration:
+          name: Outer to gate duration
+          description: Time it takes to walk from outer pickup zone to the gate by foot. Worst case scenario.
+          default:
+            hours: 0
+            minutes: 30
+            seconds: 0
+            milliseconds: 0
+          duration:
+    zones:
+      name: Zones
+      icon: mdi:map-marker
+      input:
+        gate_zone:
+          name: Gate zone
+          description: Immediately by gate. Can reach gate by walking from this distance within the closing timeout.
+          default: zone.home
+          entity:
+            filter:
+              - domain: zone
+        inner_zone:
+          name: Inner pickup zone
+          description: Zone which represents a driving distance reasonable to open the gate at. The gate will start opening at this distance.
+          entity:
+            filter:
+              - domain: zone
+        outer_zone:
+          name: Outer pickup zone
+          description: Further away zone which is always passed when driving home. Used for speed recognition.
+          entity:
+            filter:
+              - domain: zone
+
+
+triggers:
+  - trigger: zone
+    entity_id: !input person
+    zone: !input outer_zone
+    event: enter
+
+actions:
+  - wait_for_trigger:
+      - trigger: zone
+        entity_id: !input person
+        zone: !input inner_zone
+        event: enter
+    timeout: !input outer_inner_duration
+    alias: Wait for entering inner pickup
+  - if:
+      - condition: template
+        value_template: "{{ wait.trigger is not none }}"
+        alias: Entered inner pickup within timeout
+    then:
+      !input open_gate
+    else:
+      - alias: Wait until by gate
+        wait_for_trigger:
+          - trigger: zone
+            entity_id: !input person
+            zone: !input gate_zone
+            event: enter
+        continue_on_timeout: false
+        timeout: !input outer_walk_duration
+      !open_gate
+
+mode: restart
+max_exceeded: silent
