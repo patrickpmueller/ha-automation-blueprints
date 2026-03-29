@@ -35,3 +35,4 @@ actions:
       entity_id: !input lights
 
 mode: restart
+max_exceeded: silent
