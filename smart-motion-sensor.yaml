@@ -58,8 +58,7 @@ actions:
                   entity_id: !input motion_entity
                   from: "on"
                   to: "off"
-              - delay:
-                !input no_motion_wait
+              - delay: !input no_motion_wait
               - action: light.turn_off
                 target:
                   entity_id: "{{ repeat.item }}"
