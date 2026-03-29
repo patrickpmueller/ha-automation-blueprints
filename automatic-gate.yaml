@@ -9,13 +9,16 @@ blueprint:
     person:
       name: Person
       description: Person tracker which will be used to open the gate.
-      entity:
-        filter:
-          - domain: person
+      selector:
+        entity:
+          filter:
+            - domain: person
+            - domain: device_tracker
     open_gate:
       name: Open Gate
       description: Action to open the gate. Action sould close the gate within a timeout if desired.
-      action:
+      selector:
+        action:
     timeouts:
       name: Timeouts
       icon: mdi:clock
@@ -28,7 +31,8 @@ blueprint:
             minutes: 01
             seconds: 30
             milliseconds: 0
-          duration:
+          selector:
+            duration:
         outer_walk_duration:
           name: Outer to gate duration
           description: Time it takes to walk from outer pickup zone to the gate by foot. Worst case scenario.
@@ -37,7 +41,8 @@ blueprint:
             minutes: 30
             seconds: 0
             milliseconds: 0
-          duration:
+          selector:
+            duration:
     zones:
       name: Zones
       icon: mdi:map-marker
@@ -46,21 +51,24 @@ blueprint:
           name: Gate zone
           description: Immediately by gate. Can reach gate by walking from this distance within the closing timeout.
           default: zone.home
-          entity:
-            filter:
-              - domain: zone
+          selector:
+            entity:
+              filter:
+                - domain: zone
         inner_zone:
           name: Inner pickup zone
           description: Zone which represents a driving distance reasonable to open the gate at. The gate will start opening at this distance.
-          entity:
-            filter:
-              - domain: zone
+          selector:
+            entity:
+              filter:
+                - domain: zone
         outer_zone:
           name: Outer pickup zone
           description: Further away zone which is always passed when driving home. Used for speed recognition.
-          entity:
-            filter:
-              - domain: zone
+          selector:
+            entity:
+              filter:
+                - domain: zone
 
 
 triggers:
