@@ -1,0 +1,64 @@
+blueprint:
+  name: Smart Motion-activated Light
+  description: Turn on a light when motion is detected, and only if the light is not already switched on.
+  domain: automation
+  author: Patrick Pellacani Mueller
+  input:
+    motion_entity:
+      name: Motion Sensor
+      selector:
+        entity:
+          filter:
+            - device_class: occupancy
+              domain: binary_sensor
+            - device_class: motion
+              domain: binary_sensor
+    light_target:
+      name: Light
+      selector:
+        target:
+          entity:
+            domain: light
+    no_motion_wait:
+      name: Wait time
+      description: Time to leave the light on after last motion is detected.
+      default: 120
+      selector:
+        number:
+          min: 0
+          max: 3600
+          unit_of_measurement: seconds
+
+# If motion is detected within the delay,
+# we restart the script.
+mode: restart
+max_exceeded: silent
+
+triggers:
+  - trigger: state
+    entity_id: !input motion_entity
+    from: "off"
+    to: "on"
+
+actions:
+  - repeat:
+    for_each: !input light_target
+    sequence:
+      - if:
+        - condition: template
+          value_template: "{{ is_state(repeat.item, 'off') }}"
+      - then:
+        - action: light.turn_on
+          target: "{{ repeat.item }}"
+        - wait_for_trigger:
+          - trigger: state
+            entity_id: !input motion_entity
+            from: "on"
+            to: "off"
+        - delay:
+          hours: 0
+          minutes: 0
+          seconds: !input no_motion_wait
+          milliseconds: 0
+        - action: light.turn_off
+          target: "{{ repeat.item }}"
