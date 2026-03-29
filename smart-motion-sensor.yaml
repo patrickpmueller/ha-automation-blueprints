@@ -65,8 +65,8 @@ actions:
       to: "off"
   - delay: !input no_motion_wait
   - repeat:
-    for_each: "{{ to_turn_off }}"
-    sequence:
-      - action: light.turn_off
-        target:
-          entity_id: "{{ repeat.item }}"
+      for_each: "{{ to_turn_off }}"
+      sequence:
+        - action: light.turn_off
+          target:
+            entity_id: "{{ repeat.item }}"
