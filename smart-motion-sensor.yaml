@@ -47,19 +47,19 @@ actions:
         for_each: !input light_entities
         sequence:
           - if:
-            - condition: template
-              value_template: "{{ is_state(repeat.item, 'off') }}"
+              - condition: template
+                value_template: "{{ is_state(repeat.item, 'off') }}"
             then:
-            - action: light.turn_on
-              target:
-                entity_id: "{{ repeat.item }}"
-            - wait_for_trigger:
-              - trigger: state
-                entity_id: !input motion_entity
-                from: "on"
-                to: "off"
-            - delay:
-              !input no_motion_wait
-            - action: light.turn_off
-              target:
-                entity_id: "{{ repeat.item }}"
+              - action: light.turn_on
+                target:
+                  entity_id: "{{ repeat.item }}"
+              - wait_for_trigger:
+                - trigger: state
+                  entity_id: !input motion_entity
+                  from: "on"
+                  to: "off"
+              - delay:
+                !input no_motion_wait
+              - action: light.turn_off
+                target:
+                  entity_id: "{{ repeat.item }}"
