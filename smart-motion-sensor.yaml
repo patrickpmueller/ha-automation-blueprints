@@ -15,14 +15,13 @@ blueprint:
               domain: binary_sensor
             - device_class: motion
               domain: binary_sensor
-    light_entities:
+    light_target:
       name: Light
       description: Lights to turn on.
       selector:
-        entity:
-          multiple: true
-          filter:
-            - domain: light
+        target:
+          entity:
+            domain: light
     no_motion_wait:
       name: Wait time
       description: Time to leave the light on after last motion is detected.
@@ -32,22 +31,33 @@ blueprint:
         seconds: 30
       selector:
         duration:
-
 mode: single
 max_exceeded: silent
-
 triggers:
   - trigger: state
     entity_id: !input motion_entity
     from: "off"
     to: "on"
-
 variables:
+  light_target: !input light_target
+  light_entities: >
+    {% set ns = namespace(entities=[]) %}
+    {% if light_target.entity_id is string %}
+      {% set ns.entities = [light_target.entity_id] %}
+    {% elif light_target.entity_id is iterable %}
+      {% set ns.entities = light_target.entity_id %}
+    {% endif %}
+    {% for area in (light_target.area_id if light_target.area_id is iterable else ([light_target.area_id] if light_target.area_id is defined and light_target.area_id else [])) %}
+      {% set ns.entities = ns.entities + area_entities(area) | select('match', 'light\\.') | list %}
+    {% endfor %}
+    {% for device in (light_target.device_id if light_target.device_id is iterable else ([light_target.device_id] if light_target.device_id is defined and light_target.device_id else [])) %}
+      {% set ns.entities = ns.entities + device_entities(device) | select('match', 'light\\.') | list %}
+    {% endfor %}
+    {{ ns.entities | unique | list }}
   to_turn_off: []
-
 actions:
   - repeat:
-      for_each: !input light_entities
+      for_each: "{{ light_entities }}"
       sequence:
         - if:
             - condition: template
