@@ -42,16 +42,20 @@ variables:
   light_target: !input light_target
   light_entities: >
     {% set ns = namespace(entities=[]) %}
-    {% if light_target.entity_id is string %}
-      {% set ns.entities = [light_target.entity_id] %}
-    {% elif light_target.entity_id is iterable %}
-      {% set ns.entities = light_target.entity_id %}
-    {% endif %}
-    {% for area in (light_target.area_id if light_target.area_id is iterable else ([light_target.area_id] if light_target.area_id is defined and light_target.area_id else [])) %}
-      {% set ns.entities = ns.entities + area_entities(area) | select('match', 'light\\.') | list %}
+    {% set entity_ids = light_target.entity_id | default([]) %}
+    {% set device_ids = light_target.device_id | default([]) %}
+    {% set area_ids = light_target.area_id | default([]) %}
+    {% set entity_ids = [entity_ids] if entity_ids is string else entity_ids %}
+    {% set device_ids = [device_ids] if device_ids is string else device_ids %}
+    {% set area_ids = [area_ids] if area_ids is string else area_ids %}
+    {% for e in entity_ids %}
+      {% set ns.entities = ns.entities + [e] %}
     {% endfor %}
-    {% for device in (light_target.device_id if light_target.device_id is iterable else ([light_target.device_id] if light_target.device_id is defined and light_target.device_id else [])) %}
-      {% set ns.entities = ns.entities + device_entities(device) | select('match', 'light\\.') | list %}
+    {% for d in device_ids %}
+      {% set ns.entities = ns.entities + (device_entities(d) | select('match', '^light\\.') | list) %}
+    {% endfor %}
+    {% for a in area_ids %}
+      {% set ns.entities = ns.entities + (area_entities(a) | select('match', '^light\\.') | list) %}
     {% endfor %}
     {{ ns.entities | unique | list }}
   to_turn_off: []
